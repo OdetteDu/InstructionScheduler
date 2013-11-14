@@ -1,5 +1,11 @@
 import java.util.ArrayList;
 
+import exception.ExtraTokenException;
+import exception.ImmediateValueNotIntegerException;
+import exception.InvalidArrowException;
+import exception.InvalidOpcodeException;
+import exception.InvalidRegisterNameException;
+
 
 public class Parser {
 

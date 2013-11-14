@@ -4,20 +4,26 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import exception.ExtraTokenException;
+import exception.ImmediateValueNotIntegerException;
+import exception.InvalidArrowException;
+import exception.InvalidCommandLineArgumentException;
+import exception.InvalidOpcodeException;
+import exception.InvalidRegisterNameException;
+import exception.UseUndefinedRegisterException;
+
 
 public class RegisterAllocator {
 
-	private boolean useTopDown;
-	private int numRegister;
+	public int NUM_REGISTERS = 256;
+	
 	private String filePath;
 	private ArrayList<Instruction> instructions;
 	private AAllocator allocator;
 
-	public RegisterAllocator(boolean useTopDown, int numRegister, String filePath)
+	public RegisterAllocator(String filePath)
 	{
 		instructions=new ArrayList<Instruction>();
-		this.useTopDown=useTopDown;
-		this.numRegister=numRegister;
 		this.filePath=filePath;
 	}
 
@@ -53,78 +59,28 @@ public class RegisterAllocator {
 		} 
 	}
 
-	public String allocate() throws UseUndefinedRegisterException, NoFreeRegisterException, NoEnoughMemoryToSpillException
+	public void allocate() throws UseUndefinedRegisterException
 	{
-		if(useTopDown)
-		{
-			allocator=new TopDownAllocator(numRegister,instructions);
-		}
-		else
-		{
-			allocator=new ButtomUpAllocator(numRegister,instructions);
-		}
-
-		System.out.println(allocator);
-		return allocator.getOutput();
+		allocator=new AAllocator(NUM_REGISTERS,instructions);
 	}
 
-	public String toString()
-	{
-		String s="";
-		s+="File: "+filePath+"\n";
-
-		if(useTopDown)
-		{
-			s+="Use Top Down Mode\n";
-		}
-		else
-		{
-			s+="Use Buttom Up Mode\n";
-		}
-
-		s+="Number of Registers: "+numRegister+"\n";
-
-		s+=allocator;
-
-		return s;
-	}
-
-	public String run() throws ImmediateValueNotIntegerException, UseUndefinedRegisterException, NoFreeRegisterException, NoEnoughMemoryToSpillException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException
+	public void run() throws ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException
 	{
 		readFile();
-		return allocate();
+		allocate();
 	}
 
 	public static void main(String args[])
 	{
 		try{
-			if(args.length!=3)
+			if(args.length!=1)
 			{
 				throw new InvalidCommandLineArgumentException();
 			}
 
-			String mode=args[0];
-			boolean useTopDown=false;
-
-			if(mode.equals("t"))
-			{
-				useTopDown=true;
-			}
-			else if(mode.equals("b"))
-			{
-				useTopDown=false;
-			}
-			else
-			{
-				throw new InvalidCommandLineArgumentException();
-			}
-
-			int numRegisters=Integer.parseInt(args[1]);
-			String filePath=args[2];
-			RegisterAllocator registerAllocator=new RegisterAllocator(useTopDown, numRegisters,filePath);
-			System.out.println(registerAllocator.run());
-			
-			
+			String filePath=args[0];
+			RegisterAllocator registerAllocator=new RegisterAllocator(filePath);
+			registerAllocator.run();
 		}
 		catch(Exception e)
 		{

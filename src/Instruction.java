@@ -22,30 +22,55 @@ public class Instruction {
 	
 	public String toString()
 	{
-		String s="Opcode: "+opcode+" ";
+//		String s="Opcode: "+opcode+" ";
+//		
+//		if(Instruction.isValidOpcodeWithSource1Source2Target(opcode))
+//		{
+//			s+="Source1: "+source1+" Source2: "+source2+" Target: "+target;	
+//		}
+//		else if(opcode.equals(Instruction.validOpcodeWithImmediateValue))
+//		{
+//			s+="Immediate: "+immediateValue;	
+//		}
+//		else if(opcode.equals(Instruction.validOpcodeWithTargetImmediateValue))
+//		{
+//			s+="Immediate: "+immediateValue+" Target: "+target;	
+//		}
+//		else if(opcode.equals(Instruction.validOpcodeWithSource1Source2))
+//		{
+//			s+="Source1: "+source1+" Source2: "+source2;
+//		}
+//		else if(opcode.equals(Instruction.validOpcodeWithSource1Target))
+//		{
+//			s+="Source1: "+source1+" Target: "+target;	
+//		}
+//		
+//		s+="\n";
+//		
+//		return s;
+		
+		String s=opcode+" ";
 		
 		if(Instruction.isValidOpcodeWithSource1Source2Target(opcode))
 		{
-			s+="Source1: "+source1+" Source2: "+source2+" Target: "+target;	
+			s+=" "+source1+" "+source2+" => "+target;	
 		}
 		else if(opcode.equals(Instruction.validOpcodeWithImmediateValue))
 		{
-			s+="Immediate: "+immediateValue;	
+			s+=" "+immediateValue;	
 		}
 		else if(opcode.equals(Instruction.validOpcodeWithTargetImmediateValue))
 		{
-			s+="Immediate: "+immediateValue+" Target: "+target;	
+			s+=" "+immediateValue+" => "+target;	
 		}
 		else if(opcode.equals(Instruction.validOpcodeWithSource1Source2))
 		{
-			s+="Source1: "+source1+" Source2: "+source2;
+			s+=" "+source1+" => "+source2;
 		}
 		else if(opcode.equals(Instruction.validOpcodeWithSource1Target))
 		{
-			s+="Source1: "+source1+" Target: "+target;	
+			s+=" "+source1+" => "+target;	
 		}
-		
-		s+="\n";
 		
 		return s;
 	}
