@@ -10,12 +10,13 @@ import exception.InvalidArrowException;
 import exception.InvalidCommandLineArgumentException;
 import exception.InvalidOpcodeException;
 import exception.InvalidRegisterNameException;
+import exception.RenameConflictException;
 import exception.UseUndefinedRegisterException;
 
 
 public class RegisterAllocator {
 
-	public int NUM_REGISTERS = 256;
+	public static int NUM_REGISTERS = 256;
 	
 	private String filePath;
 	private ArrayList<Instruction> instructions;
@@ -59,12 +60,12 @@ public class RegisterAllocator {
 		} 
 	}
 
-	public void allocate() throws UseUndefinedRegisterException
+	public void allocate() throws UseUndefinedRegisterException, RenameConflictException
 	{
-		allocator=new AAllocator(NUM_REGISTERS,instructions);
+		allocator=new AAllocator(instructions);
 	}
 
-	public void run() throws ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException
+	public void run() throws ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException, RenameConflictException
 	{
 		readFile();
 		allocate();

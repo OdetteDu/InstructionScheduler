@@ -2,24 +2,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import exception.RenameConflictException;
 import exception.UseUndefinedRegisterException;
 
 public class AAllocator {
 
 	private int renameCount;
+	private int maxRegisterNumber;
 	protected ArrayList<Instruction> instructions;
 
-	public AAllocator(int numPhysicalRegisters, ArrayList<Instruction> instructions) throws UseUndefinedRegisterException 
+	public AAllocator(ArrayList<Instruction> instructions) throws UseUndefinedRegisterException, RenameConflictException 
 	{
-		renameCount=-2;
+		maxRegisterNumber=-1;
+		renameCount=-1;
 		this.instructions=instructions;
 		renameInstructions();
 		Printer.print(instructions);
 	}
 
-	private int getAvailableName()
+	private int getAvailableName() throws RenameConflictException
 	{
-		return renameCount--;
+		renameCount--;
+		int newName = RegisterAllocator.NUM_REGISTERS+renameCount;
+		if(newName < maxRegisterNumber)
+		{
+			throw new RenameConflictException();
+		}
+		
+		return newName;
 	}
 
 	private void rename(Register r, HashMap<Integer, Integer> renameList)
@@ -32,7 +42,7 @@ public class AAllocator {
 		}
 	}
 
-	private void renameInstructions() throws UseUndefinedRegisterException
+	private void renameInstructions() throws UseUndefinedRegisterException, RenameConflictException
 	{
 		HashMap<Integer, Integer> liveRegisters=new HashMap<Integer,Integer>();
 		ArrayList<Integer> definedVr=new ArrayList<Integer>();
@@ -45,6 +55,10 @@ public class AAllocator {
 			if(instruction.getTarget()!=null)
 			{
 				Register target=instruction.getTarget();
+				if(target.getNumber()>maxRegisterNumber)
+				{
+					maxRegisterNumber = target.getNumber();
+				}
 				rename(target,renameList);
 				if(liveRegisters.get(target.getNumber())!=null)
 				{
@@ -66,6 +80,10 @@ public class AAllocator {
 			if(instruction.getSource1()!=null)
 			{
 				Register source1=instruction.getSource1();
+				if(source1.getNumber()>maxRegisterNumber)
+				{
+					maxRegisterNumber = source1.getNumber();
+				}
 				rename(source1,renameList);
 				if(liveRegisters.get(source1.getNumber())==null)
 				{
@@ -82,6 +100,10 @@ public class AAllocator {
 			if(instruction.getSource2()!=null)
 			{
 				Register source2=instruction.getSource2();
+				if(source2.getNumber()>maxRegisterNumber)
+				{
+					maxRegisterNumber = source2.getNumber();
+				}
 				rename(source2,renameList);
 				if(liveRegisters.get(source2.getNumber())==null)
 				{
