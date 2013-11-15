@@ -14,15 +14,14 @@ import exception.RenameConflictException;
 import exception.UseUndefinedRegisterException;
 
 
-public class RegisterAllocator {
+public class InstructionScheduler {
 
 	public static int NUM_REGISTERS = 256;
 	
 	private String filePath;
 	private ArrayList<Instruction> instructions;
-	private AAllocator allocator;
 
-	public RegisterAllocator(String filePath)
+	public InstructionScheduler(String filePath)
 	{
 		instructions=new ArrayList<Instruction>();
 		this.filePath=filePath;
@@ -60,15 +59,11 @@ public class RegisterAllocator {
 		} 
 	}
 
-	public void allocate() throws UseUndefinedRegisterException, RenameConflictException
-	{
-		allocator=new AAllocator(instructions);
-	}
-
 	public void run() throws ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException, RenameConflictException
 	{
 		readFile();
-		allocate();
+		instructions = new Renamer(instructions).renameInstructions();
+		Printer.print(instructions);
 	}
 
 	public static void main(String args[])
@@ -80,7 +75,7 @@ public class RegisterAllocator {
 			}
 
 			String filePath=args[0];
-			RegisterAllocator registerAllocator=new RegisterAllocator(filePath);
+			InstructionScheduler registerAllocator=new InstructionScheduler(filePath);
 			registerAllocator.run();
 		}
 		catch(Exception e)

@@ -7,3 +7,5 @@
 /RegisterAllocator.class
 /Scanner.class
 /exception
+/Renamer.class
+/InstructionScheduler.class

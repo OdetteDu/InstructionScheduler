@@ -5,25 +5,23 @@ import java.util.Iterator;
 import exception.RenameConflictException;
 import exception.UseUndefinedRegisterException;
 
-public class AAllocator {
+public class Renamer {
 
 	private int renameCount;
 	private int maxRegisterNumber;
 	protected ArrayList<Instruction> instructions;
 
-	public AAllocator(ArrayList<Instruction> instructions) throws UseUndefinedRegisterException, RenameConflictException 
+	public Renamer(ArrayList<Instruction> instructions) throws UseUndefinedRegisterException, RenameConflictException 
 	{
 		maxRegisterNumber=-1;
 		renameCount=-1;
 		this.instructions=instructions;
-		renameInstructions();
-		Printer.print(instructions);
 	}
 
 	private int getAvailableName() throws RenameConflictException
 	{
 		renameCount--;
-		int newName = RegisterAllocator.NUM_REGISTERS+renameCount;
+		int newName = InstructionScheduler.NUM_REGISTERS+renameCount;
 		if(newName < maxRegisterNumber)
 		{
 			throw new RenameConflictException();
@@ -32,17 +30,17 @@ public class AAllocator {
 		return newName;
 	}
 
-	private void rename(Register r, HashMap<Integer, Integer> renameList)
+	private void renameRegister(Register r, HashMap<Integer, Integer> renameList)
 	{
 		if(renameList.get(r.getNumber())!=null)
 		{
 			int newName=renameList.get(r.getNumber());
 			r.setNumber(newName);
-			rename(r,renameList);
+			renameRegister(r,renameList);
 		}
 	}
 
-	private void renameInstructions() throws UseUndefinedRegisterException, RenameConflictException
+	public ArrayList<Instruction> renameInstructions() throws UseUndefinedRegisterException, RenameConflictException
 	{
 		HashMap<Integer, Integer> liveRegisters=new HashMap<Integer,Integer>();
 		ArrayList<Integer> definedVr=new ArrayList<Integer>();
@@ -59,7 +57,7 @@ public class AAllocator {
 				{
 					maxRegisterNumber = target.getNumber();
 				}
-				rename(target,renameList);
+				renameRegister(target,renameList);
 				if(liveRegisters.get(target.getNumber())!=null)
 				{
 					liveRegisters.remove(target.getNumber());
@@ -84,7 +82,7 @@ public class AAllocator {
 				{
 					maxRegisterNumber = source1.getNumber();
 				}
-				rename(source1,renameList);
+				renameRegister(source1,renameList);
 				if(liveRegisters.get(source1.getNumber())==null)
 				{
 					if(definedVr.contains(source1.getNumber()))
@@ -104,7 +102,7 @@ public class AAllocator {
 				{
 					maxRegisterNumber = source2.getNumber();
 				}
-				rename(source2,renameList);
+				renameRegister(source2,renameList);
 				if(liveRegisters.get(source2.getNumber())==null)
 				{
 					if(definedVr.contains(source2.getNumber()))
@@ -129,5 +127,7 @@ public class AAllocator {
 			}
 			throw new UseUndefinedRegisterException(exceptionMessage);
 		}
+		
+		return instructions;
 	}
 }
