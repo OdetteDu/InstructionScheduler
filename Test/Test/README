@@ -1,5 +1,0 @@
-The blocks in this directory are intended as examples to help you debug
-your scheduler. You should run both the unscheduled code and the scheduled
-code through the simulator, with the appropriate flags as described in the
-lab handout, and ensure that they produce the same outputs.
-
