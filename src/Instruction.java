@@ -10,6 +10,7 @@ public class Instruction {
 	public static String validOpcodeWithTargetImmediateValue="loadI";
 	public static String validOpcodeWithImmediateValue="output";
 
+	private int index;
 	private String opcode;
 	private Register source1, source2;
 	private Register target;
@@ -21,35 +22,8 @@ public class Instruction {
 	}
 	
 	public String toString()
-	{
-//		String s="Opcode: "+opcode+" ";
-//		
-//		if(Instruction.isValidOpcodeWithSource1Source2Target(opcode))
-//		{
-//			s+="Source1: "+source1+" Source2: "+source2+" Target: "+target;	
-//		}
-//		else if(opcode.equals(Instruction.validOpcodeWithImmediateValue))
-//		{
-//			s+="Immediate: "+immediateValue;	
-//		}
-//		else if(opcode.equals(Instruction.validOpcodeWithTargetImmediateValue))
-//		{
-//			s+="Immediate: "+immediateValue+" Target: "+target;	
-//		}
-//		else if(opcode.equals(Instruction.validOpcodeWithSource1Source2))
-//		{
-//			s+="Source1: "+source1+" Source2: "+source2;
-//		}
-//		else if(opcode.equals(Instruction.validOpcodeWithSource1Target))
-//		{
-//			s+="Source1: "+source1+" Target: "+target;	
-//		}
-//		
-//		s+="\n";
-//		
-//		return s;
-		
-		String s=opcode+" ";
+	{	
+		String s=index+": "+opcode+" ";
 		
 		if(Instruction.isValidOpcodeWithSource1Source2Target(opcode))
 		{
@@ -75,6 +49,14 @@ public class Instruction {
 		return s;
 	}
 	
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
 	public String getOpcode() {
 		return opcode;
 	}

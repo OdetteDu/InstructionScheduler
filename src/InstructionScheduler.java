@@ -63,7 +63,6 @@ public class InstructionScheduler {
 	{
 		readFile();
 		instructions = new Renamer(instructions).renameInstructions();
-		Printer.print(instructions);
 		new DependencyGraphCreater(instructions).create();
 	}
 

@@ -9,7 +9,7 @@ public class Printer<E> {
 	{
 		for (int i=0; i<toBePrinted.size(); i++)
 		{
-			System.out.println(i+": "+toBePrinted.get(i));
+			System.out.println(toBePrinted.get(i));
 		}
 		
 		System.out.println();
