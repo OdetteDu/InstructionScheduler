@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-
+import java.util.HashSet;
 
 public class Node {
 	
@@ -10,6 +10,14 @@ public class Node {
 	
 	public Node(Instruction instruction)
 	{
+		this.instruction = instruction;
+	}
+
+	public Instruction getInstruction() {
+		return instruction;
+	}
+
+	public void setInstruction(Instruction instruction) {
 		this.instruction = instruction;
 	}
 
@@ -30,6 +38,15 @@ public class Node {
 	{
 		this.predecessors.add(node);
 	}
+
+	public ArrayList<Node> getSuccessors() {
+		return successors;
+	}
+
+	public void setSuccessors(ArrayList<Node> successors) {
+		this.successors = successors;
+	}
+	
 	
 	
 

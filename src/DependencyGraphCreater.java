@@ -20,19 +20,20 @@ public class DependencyGraphCreater {
 			if(instruction.getTarget()!=null)
 			{
 				Register target=instruction.getTarget();
-			
+				//define
+				
 			}
 
 			if(instruction.getSource1()!=null)
 			{
 				Register source1=instruction.getSource1();
-				
+				//use
 			}
 
 			if(instruction.getSource2()!=null)
 			{
 				Register source2=instruction.getSource2();
-				
+				//use
 			}
 			i--;
 		}
