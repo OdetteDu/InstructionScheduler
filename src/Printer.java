@@ -42,11 +42,6 @@ public class Printer<E> {
 
 	public static void print(Node root, HashSet<Node> processed)
 	{
-		if(processed == null)
-		{
-			processed = new HashSet<Node>();
-		}
-
 		if(!processed.contains(root))
 		{
 			processed.add(root);

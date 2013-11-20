@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class Node {
 	
@@ -11,6 +12,8 @@ public class Node {
 	public Node(Instruction instruction)
 	{
 		this.instruction = instruction;
+		this.successors = new ArrayList<Node>();
+		this.predecessors = new ArrayList<Node>();
 	}
 
 	public Instruction getInstruction() {
@@ -47,7 +50,31 @@ public class Node {
 		this.successors = successors;
 	}
 	
-	
+	@Override
+	public String toString()
+	{
+		String s = "\n{\n";
+		s+=instruction + ": "+delay+"\n";
+		
+		s+="Predecessors: \n";
+		Iterator<Node> iterP = this.predecessors.iterator();
+		while(iterP.hasNext())
+		{
+			s+=iterP.next().getInstruction()+"\n";
+		}
+		//s+="\n";
+		
+		s+="Successors: \n";
+		Iterator<Node> iterS = this.successors.iterator();
+		while(iterS.hasNext())
+		{
+			s+=iterS.next().getInstruction()+"\n";
+		}
+		//s+="\n";
+		s+="}\n";
+		
+		return s;
+	}
 	
 
 }

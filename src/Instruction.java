@@ -23,7 +23,8 @@ public class Instruction {
 	
 	public String toString()
 	{	
-		String s=index+": "+opcode+" ";
+		//String s=index+": "+opcode+" ";
+		String s=opcode+" ";
 		
 		if(Instruction.isValidOpcodeWithSource1Source2Target(opcode))
 		{

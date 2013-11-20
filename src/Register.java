@@ -20,5 +20,19 @@ public class Register {
 	public void setNumber(int number) {
 		this.number = number;
 	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		Register r = (Register) obj;
+		return r.number == this.number;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		Integer n = number;
+		return n.hashCode();
+	}
 }
 
