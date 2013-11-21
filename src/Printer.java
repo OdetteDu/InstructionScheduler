@@ -47,10 +47,10 @@ public class Printer<E> {
 			processed.add(root);
 			Instruction currentInstruction = root.getInstruction();
 			System.out.println(currentInstruction.getIndex()+" [label= \""+currentInstruction+"\"];");
-			ArrayList<Node> currentSuccessor = root.getSuccessors();
-			for(int i=0; i<currentSuccessor.size(); i++)
+			ArrayList<Node> currentPredecessor = root.getPredecessors();
+			for(int i=0; i<currentPredecessor.size(); i++)
 			{
-				Node currentNode = currentSuccessor.get(i);
+				Node currentNode = currentPredecessor.get(i);
 				System.out.println(root.getInstruction().getIndex() 
 						+ " -> " + currentNode.getInstruction().getIndex() +";");
 				print(currentNode, processed);

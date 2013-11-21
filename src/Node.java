@@ -6,14 +6,15 @@ public class Node {
 	
 	private Instruction instruction;
 	private int delay;
-	private ArrayList<Node> successors;
 	private ArrayList<Node> predecessors;
+	private ArrayList<Node> successors;
 	
 	public Node(Instruction instruction)
 	{
 		this.instruction = instruction;
-		this.successors = new ArrayList<Node>();
+		
 		this.predecessors = new ArrayList<Node>();
+		this.successors = new ArrayList<Node>();
 	}
 
 	public Instruction getInstruction() {
@@ -32,14 +33,22 @@ public class Node {
 		this.delay = delay;
 	}
 	
-	public void addSuccessor(Node node)
-	{
-		this.successors.add(node);
-	}
-	
 	public void addPredecessor(Node node)
 	{
 		this.predecessors.add(node);
+	}
+
+	public ArrayList<Node> getPredecessors() {
+		return predecessors;
+	}
+
+	public void setPredecessors(ArrayList<Node> predecessors) {
+		this.predecessors = predecessors;
+	}
+	
+	public void addSuccessor(Node node)
+	{
+		this.successors.add(node);
 	}
 
 	public ArrayList<Node> getSuccessors() {
