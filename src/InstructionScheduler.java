@@ -66,7 +66,7 @@ public class InstructionScheduler {
 		DependencyGraphCreater graphCreater = new DependencyGraphCreater(instructions);
 		graphCreater.create();
 		graphCreater.calculateDelay();
-		graphCreater.print();
+		graphCreater.printTopDown();
 	}
 
 	public static void main(String args[])

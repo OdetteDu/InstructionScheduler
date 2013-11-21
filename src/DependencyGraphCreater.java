@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 
 public class DependencyGraphCreater {
@@ -19,7 +20,7 @@ public class DependencyGraphCreater {
 	
 	public void create()
 	{
-		HashMap<Register, Node> waitForPredecessor = new HashMap<Register, Node>();
+		HashMap<Register, LinkedList<Node>> waitForPredecessor = new HashMap<Register, LinkedList<Node>>();
 		
 		int i=instructions.size()-1;
 		while(i>=0)
@@ -40,11 +41,18 @@ public class DependencyGraphCreater {
 				//s+=" "+immediateValue+" => "+target;	
 				Register target=instruction.getTarget();
 				//define
-				Node successor = waitForPredecessor.remove(target);
-				if(successor != null)
+				//Node successor = waitForPredecessor.remove(target);
+				LinkedList<Node> waits = waitForPredecessor.remove(target);
+				if(waits != null)
 				{
-					successor.addPredecessor(currentNode);
-					leaves.remove(successor);
+					Iterator<Node> iter = waits.iterator();
+					while(iter.hasNext())
+					{
+						Node successor = iter.next();
+						successor.addPredecessor(currentNode);
+						currentNode.addSuccessor(successor);
+						leaves.remove(successor);
+					}
 				}
 				else
 				{
@@ -56,22 +64,63 @@ public class DependencyGraphCreater {
 				//s+=" "+source1+" => "+source2;
 				Register source1=instruction.getSource1();
 				//use
-				waitForPredecessor.put(source1, currentNode);
+//				waitForPredecessor.put(source1, currentNode);
+				LinkedList<Node> nodesForSource1 = waitForPredecessor.get(source1);
+				if(nodesForSource1 != null)
+				{
+					nodesForSource1.add(currentNode);
+					waitForPredecessor.put(source1, nodesForSource1);
+				}
+				else
+				{
+					nodesForSource1 = new LinkedList<Node>();
+					nodesForSource1.add(currentNode);
+					waitForPredecessor.put(source1, nodesForSource1);
+				}
 				
 				Register source2=instruction.getSource2();
 				//use
-				waitForPredecessor.put(source2, currentNode);
+//				waitForPredecessor.put(source2, currentNode);
+				LinkedList<Node> nodesForSource2 = waitForPredecessor.get(source2);
+				if(nodesForSource2 != null)
+				{
+					nodesForSource2.add(currentNode);
+					waitForPredecessor.put(source2, nodesForSource2);
+				}
+				else
+				{
+					nodesForSource2 = new LinkedList<Node>();
+					nodesForSource2.add(currentNode);
+					waitForPredecessor.put(source2, nodesForSource2);
+				}
 			}
 			else if(opcode==Instruction.OPCODE.LOAD)
 			{
 				//s+=" "+source1+" => "+target;	
 				Register target=instruction.getTarget();
 				//define
-				Node successor = waitForPredecessor.remove(target);
-				if(successor != null)
+//				Node successor = waitForPredecessor.remove(target);
+//				if(successor != null)
+//				{
+//					successor.addPredecessor(currentNode);
+//					currentNode.addSuccessor(successor);
+//					leaves.remove(successor);
+//				}
+//				else
+//				{
+//					roots.add(currentNode);
+//				}
+				LinkedList<Node> waits = waitForPredecessor.remove(target);
+				if(waits != null)
 				{
-					successor.addPredecessor(currentNode);
-					leaves.remove(successor);
+					Iterator<Node> iter = waits.iterator();
+					while(iter.hasNext())
+					{
+						Node successor = iter.next();
+						successor.addPredecessor(currentNode);
+						currentNode.addSuccessor(successor);
+						leaves.remove(successor);
+					}
 				}
 				else
 				{
@@ -80,18 +129,47 @@ public class DependencyGraphCreater {
 				
 				Register source1=instruction.getSource1();
 				//use
-				waitForPredecessor.put(source1, currentNode);
+//				waitForPredecessor.put(source1, currentNode);
+				LinkedList<Node> nodesForSource1 = waitForPredecessor.get(source1);
+				if(nodesForSource1 != null)
+				{
+					nodesForSource1.add(currentNode);
+					waitForPredecessor.put(source1, nodesForSource1);
+				}
+				else
+				{
+					nodesForSource1 = new LinkedList<Node>();
+					nodesForSource1.add(currentNode);
+					waitForPredecessor.put(source1, nodesForSource1);
+				}
 			}
 			else
 			{
 				//s+=" "+source1+" "+source2+" => "+target;	
 				Register target=instruction.getTarget();
 
-				Node successor = waitForPredecessor.remove(target);
-				if(successor != null)
+//				Node successor = waitForPredecessor.remove(target);
+//				if(successor != null)
+//				{
+//					successor.addPredecessor(currentNode);
+//					currentNode.addSuccessor(successor);
+//					leaves.remove(successor);
+//				}
+//				else
+//				{
+//					roots.add(currentNode);
+//				}
+				LinkedList<Node> waits = waitForPredecessor.remove(target);
+				if(waits != null)
 				{
-					successor.addPredecessor(currentNode);
-					leaves.remove(successor);
+					Iterator<Node> iter = waits.iterator();
+					while(iter.hasNext())
+					{
+						Node successor = iter.next();
+						successor.addPredecessor(currentNode);
+						currentNode.addSuccessor(successor);
+						leaves.remove(successor);
+					}
 				}
 				else
 				{
@@ -99,10 +177,33 @@ public class DependencyGraphCreater {
 				}
 				
 				Register source1=instruction.getSource1();
-				waitForPredecessor.put(source1, currentNode);
+				LinkedList<Node> nodesForSource1 = waitForPredecessor.get(source1);
+				if(nodesForSource1 != null)
+				{
+					nodesForSource1.add(currentNode);
+					waitForPredecessor.put(source1, nodesForSource1);
+				}
+				else
+				{
+					nodesForSource1 = new LinkedList<Node>();
+					nodesForSource1.add(currentNode);
+					waitForPredecessor.put(source1, nodesForSource1);
+				}
+				
 				
 				Register source2=instruction.getSource2();
-				waitForPredecessor.put(source2, currentNode);
+				LinkedList<Node> nodesForSource2 = waitForPredecessor.get(source2);
+				if(nodesForSource2 != null)
+				{
+					nodesForSource2.add(currentNode);
+					waitForPredecessor.put(source2, nodesForSource2);
+				}
+				else
+				{
+					nodesForSource2 = new LinkedList<Node>();
+					nodesForSource2.add(currentNode);
+					waitForPredecessor.put(source2, nodesForSource2);
+				}
 			}
 			i--;
 		}
@@ -138,14 +239,25 @@ public class DependencyGraphCreater {
 		
 	}
 	
-	public void print()
+	public void printButtomUp()
 	{
 		Printer.print(instructions);
 		HashSet<Node> printer = new HashSet<Node>();
 		Iterator<Node> iter = roots.iterator();
 		while (iter.hasNext())
 		{
-			Printer.print(iter.next(),printer);
+			Printer.printNodeButtomUp(iter.next(),printer);
+		}
+	}
+	
+	public void printTopDown()
+	{
+		Printer.print(instructions);
+		HashSet<Node> printer = new HashSet<Node>();
+		Iterator<Node> iter = leaves.iterator();
+		while (iter.hasNext())
+		{
+			Printer.printNodeTopDown(iter.next(),printer);
 		}
 	}
 

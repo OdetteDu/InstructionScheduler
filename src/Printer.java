@@ -40,7 +40,7 @@ public class Printer<E> {
 		print(toBePrinted);
 	}
 
-	public static void print(Node root, HashSet<Node> processed)
+	public static void printNodeButtomUp(Node root, HashSet<Node> processed)
 	{
 		if(!processed.contains(root))
 		{
@@ -53,7 +53,26 @@ public class Printer<E> {
 				Node currentNode = currentPredecessor.get(i);
 				System.out.println(root.getInstruction().getIndex() 
 						+ " -> " + currentNode.getInstruction().getIndex() +";");
-				print(currentNode, processed);
+				printNodeButtomUp(currentNode, processed);
+			}
+		}
+
+	}
+	
+	public static void printNodeTopDown(Node root, HashSet<Node> processed)
+	{
+		if(!processed.contains(root))
+		{
+			processed.add(root);
+			Instruction currentInstruction = root.getInstruction();
+			System.out.println(currentInstruction.getIndex()+" [label= \""+currentInstruction+" "+root.getDelay()+"\"];");
+			ArrayList<Node> currentSuccessor = root.getSuccessors();
+			for(int i=0; i<currentSuccessor.size(); i++)
+			{
+				Node currentNode = currentSuccessor.get(i);
+				System.out.println(root.getInstruction().getIndex() 
+						+ " -> " + currentNode.getInstruction().getIndex() +";");
+				printNodeTopDown(currentNode, processed);
 			}
 		}
 
