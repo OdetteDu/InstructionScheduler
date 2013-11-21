@@ -46,7 +46,7 @@ public class Printer<E> {
 		{
 			processed.add(root);
 			Instruction currentInstruction = root.getInstruction();
-			System.out.println(currentInstruction.getIndex()+" [label= \""+currentInstruction+"\"];");
+			System.out.println(currentInstruction.getIndex()+" [label= \""+currentInstruction+" "+root.getDelay()+"\"];");
 			ArrayList<Node> currentPredecessor = root.getPredecessors();
 			for(int i=0; i<currentPredecessor.size(); i++)
 			{

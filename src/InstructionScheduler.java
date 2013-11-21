@@ -63,7 +63,10 @@ public class InstructionScheduler {
 	{
 		readFile();
 		instructions = new Renamer(instructions).renameInstructions();
-		new DependencyGraphCreater(instructions).create();
+		DependencyGraphCreater graphCreater = new DependencyGraphCreater(instructions);
+		graphCreater.create();
+		graphCreater.calculateDelay();
+		graphCreater.print();
 	}
 
 	public static void main(String args[])

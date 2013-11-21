@@ -7,17 +7,19 @@ import java.util.Iterator;
 public class DependencyGraphCreater {
 	
 	private ArrayList<Instruction> instructions;
+	private HashSet<Node> roots;
+	private HashSet<Node> leaves;
 	
 	public DependencyGraphCreater(ArrayList<Instruction> instructions)
 	{
 		this.instructions = instructions;
+		roots = new HashSet<Node>();
+		leaves = new HashSet<Node>();
 	}
 	
 	public void create()
 	{
 		HashMap<Register, Node> waitForPredecessor = new HashMap<Register, Node>();
-		HashSet<Node> roots = new HashSet<Node>();
-		HashSet<Node> leaves = new HashSet<Node>();
 		
 		int i=instructions.size()-1;
 		while(i>=0)
@@ -27,36 +29,13 @@ public class DependencyGraphCreater {
 			Node currentNode = new Node(instruction);
 			leaves.add(currentNode);
 			
-			String opcode = instruction.getOpcode();
-			if(Instruction.isValidOpcodeWithSource1Source2Target(opcode))
-			{
-				//s+=" "+source1+" "+source2+" => "+target;	
-				Register target=instruction.getTarget();
-				//define
-				Node successor = waitForPredecessor.remove(target);
-				if(successor != null)
-				{
-					successor.addPredecessor(currentNode);
-					leaves.remove(successor);
-				}
-				else
-				{
-					roots.add(currentNode);
-				}
-				
-				Register source1=instruction.getSource1();
-				//use
-				waitForPredecessor.put(source1, currentNode);
-				
-				Register source2=instruction.getSource2();
-				//use
-				waitForPredecessor.put(source2, currentNode);
-			}
-			else if(opcode.equals(Instruction.validOpcodeWithImmediateValue))
+			Instruction.OPCODE opcode = instruction.getOpcode();
+			
+			if(opcode==Instruction.OPCODE.OUTPUT)
 			{
 				//s+=" "+immediateValue;	
 			}
-			else if(opcode.equals(Instruction.validOpcodeWithTargetImmediateValue))
+			else if(opcode==Instruction.OPCODE.LOADI)
 			{
 				//s+=" "+immediateValue+" => "+target;	
 				Register target=instruction.getTarget();
@@ -72,7 +51,7 @@ public class DependencyGraphCreater {
 					roots.add(currentNode);
 				}
 			}
-			else if(opcode.equals(Instruction.validOpcodeWithSource1Source2))
+			else if(opcode==Instruction.OPCODE.STORE)
 			{
 				//s+=" "+source1+" => "+source2;
 				Register source1=instruction.getSource1();
@@ -83,7 +62,7 @@ public class DependencyGraphCreater {
 				//use
 				waitForPredecessor.put(source2, currentNode);
 			}
-			else if(opcode.equals(Instruction.validOpcodeWithSource1Target))
+			else if(opcode==Instruction.OPCODE.LOAD)
 			{
 				//s+=" "+source1+" => "+target;	
 				Register target=instruction.getTarget();
@@ -103,39 +82,55 @@ public class DependencyGraphCreater {
 				//use
 				waitForPredecessor.put(source1, currentNode);
 			}
-			
-//			if(instruction.getTarget()!=null)
-//			{
-//				Register target=instruction.getTarget();
-//				//define
-//				Node successor = waitForPredecessor.remove(target);
-//				if(successor != null)
-//				{
-//					successor.addPredecessor(currentNode);
-//					leaves.remove(successor);
-//				}
-//				else
-//				{
-//					roots.add(currentNode);
-//				}
-//			}
+			else
+			{
+				//s+=" "+source1+" "+source2+" => "+target;	
+				Register target=instruction.getTarget();
 
-//			if(instruction.getSource1()!=null)
-//			{
-//				Register source1=instruction.getSource1();
-//				//use
-//				waitForPredecessor.put(source1, currentNode);
-//			}
-//
-//			if(instruction.getSource2()!=null)
-//			{
-//				Register source2=instruction.getSource2();
-//				//use
-//				waitForPredecessor.put(source2, currentNode);
-//			}
+				Node successor = waitForPredecessor.remove(target);
+				if(successor != null)
+				{
+					successor.addPredecessor(currentNode);
+					leaves.remove(successor);
+				}
+				else
+				{
+					roots.add(currentNode);
+				}
+				
+				Register source1=instruction.getSource1();
+				waitForPredecessor.put(source1, currentNode);
+				
+				Register source2=instruction.getSource2();
+				waitForPredecessor.put(source2, currentNode);
+			}
 			i--;
 		}
-		
+	}
+	
+	public void calculateDelay()
+	{
+		Iterator<Node> iter = roots.iterator();
+		while(iter.hasNext())
+		{
+			calculateDelay(iter.next(), 0);
+		}
+	}
+	
+	private void calculateDelay(Node root, int delay)
+	{
+		delay += Instruction.DELAYMAP.get(root.getInstruction().getOpcode());
+		root.setDelay(delay);
+		ArrayList<Node> currentPredecessor = root.getPredecessors();
+		for(int i=0; i<currentPredecessor.size(); i++)
+		{
+			Node currentNode = currentPredecessor.get(i);
+			calculateDelay(currentNode, delay);
+		}
+	}
+	
+	public void print()
+	{
 		Printer.print(instructions);
 		HashSet<Node> printer = new HashSet<Node>();
 		Iterator<Node> iter = roots.iterator();

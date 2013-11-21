@@ -1,51 +1,68 @@
+import java.util.EnumMap;
+import java.util.Map;
+
 
 
 
 public class Instruction {
 	
-	public static String [] validOpcode={"load","store","add","sub","mult","lshift","rshift","loadI","output"};
-	public static String [] validOpcodeWithSource1Source2Target={"add","sub","mult","lshift","rshift"};
-	public static String validOpcodeWithSource1Target="load";
-	public static String validOpcodeWithSource1Source2="store";
-	public static String validOpcodeWithTargetImmediateValue="loadI";
-	public static String validOpcodeWithImmediateValue="output";
+	public static String [] ARITHMETIC={"add","sub","mult","lshift","rshift"};
+	public static String LOAD="load";
+	public static String STORE="store";
+	public static String LOADI="loadI";
+	public static String OUTPUT="output";
+	
+	public static enum OPCODE {ADD, SUB, MULT, LSHIFT, RSHIFT, LOAD, LOADI, STORE, OUTPUT, NOP};
+	public static Map<OPCODE, Integer> DELAYMAP = new EnumMap<OPCODE, Integer>(OPCODE.class);
+	static
+	{
+		DELAYMAP.put(OPCODE.ADD, 1);
+		DELAYMAP.put(OPCODE.SUB, 1);
+		DELAYMAP.put(OPCODE.MULT, 3);
+		DELAYMAP.put(OPCODE.LSHIFT, 1);
+		DELAYMAP.put(OPCODE.RSHIFT, 1);
+		DELAYMAP.put(OPCODE.LOAD, 5);
+		DELAYMAP.put(OPCODE.LOADI, 1);
+		DELAYMAP.put(OPCODE.STORE, 5);
+		DELAYMAP.put(OPCODE.OUTPUT, 1);
+		DELAYMAP.put(OPCODE.NOP, 1);
+	}
 
 	private int index;
-	private String opcode;
+	private OPCODE opcode;
 	private Register source1, source2;
 	private Register target;
 	private int immediateValue;
 	
-	public Instruction(String opcode)
+	public Instruction(OPCODE opcode)
 	{
 		this.opcode=opcode;
 	}
 	
 	public String toString()
 	{	
-		//String s=index+": "+opcode+" ";
 		String s=opcode+" ";
 		
-		if(Instruction.isValidOpcodeWithSource1Source2Target(opcode))
-		{
-			s+=" "+source1+" "+source2+" => "+target;	
-		}
-		else if(opcode.equals(Instruction.validOpcodeWithImmediateValue))
+		if(opcode==OPCODE.OUTPUT)
 		{
 			s+=" "+immediateValue;	
 		}
-		else if(opcode.equals(Instruction.validOpcodeWithTargetImmediateValue))
+		else if(opcode==OPCODE.LOADI)
 		{
 			s+=" "+immediateValue+" => "+target;	
 		}
-		else if(opcode.equals(Instruction.validOpcodeWithSource1Source2))
+		else if(opcode==OPCODE.STORE)
 		{
 			s+=" "+source1+" => "+source2;
 		}
-		else if(opcode.equals(Instruction.validOpcodeWithSource1Target))
+		else if(opcode==OPCODE.LOAD)
 		{
 			s+=" "+source1+" => "+target;	
 		}
+		else
+		{
+			s+=" "+source1+" "+source2+" => "+target;
+		}	
 		
 		return s;
 	}
@@ -58,12 +75,15 @@ public class Instruction {
 		this.index = index;
 	}
 
-	public String getOpcode() {
+
+	public OPCODE getOpcode() {
 		return opcode;
 	}
-	public void setOpcode(String opcode) {
+
+	public void setOpcode(OPCODE opcode) {
 		this.opcode = opcode;
 	}
+
 	public Register getSource1() {
 		return source1;
 	}
@@ -89,12 +109,12 @@ public class Instruction {
 		this.immediateValue = immediateValue;
 	}
 	
-	public static boolean isValidOpcodeWithSource1Source2Target(String opcode)
+	public static boolean isArithmetic(String opcode)
 	{
 		boolean b=false;
-		for(int i=0;i<validOpcodeWithSource1Source2Target.length;i++)
+		for(int i=0;i<ARITHMETIC.length;i++)
 		{
-			if(opcode.equals(validOpcodeWithSource1Source2Target[i]))
+			if(opcode.equals(ARITHMETIC[i]))
 			{
 				b=true;
 			}

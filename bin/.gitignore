@@ -1,13 +1,1 @@
-/AAllocator.class
-/ExtraTokenException.class
-/Instruction.class
-/Parser.class
-/Printer.class
-/Register.class
-/RegisterAllocator.class
-/Scanner.class
-/exception
-/Renamer.class
-/InstructionScheduler.class
-/DependencyGraphCreater.class
-/Node.class
+/Instruction$OPCODE.class

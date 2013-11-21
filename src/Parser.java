@@ -15,30 +15,57 @@ public class Parser {
 		
 		String opcode=line.get(0);
 		
-		if(Instruction.isValidOpcodeWithSource1Source2Target(opcode))
+		if(Instruction.isArithmetic(opcode))
 		{
 			if(line.size()>5)
 			{
 				throw new ExtraTokenException();
 			}
+			
+			Instruction.OPCODE o;
+			if(opcode.equals("add"))
+			{
+				o = Instruction.OPCODE.ADD;
+			}
+			else if(opcode.equals("sub"))
+			{
+				o = Instruction.OPCODE.SUB;
+			}
+			else if(opcode.equals("mult"))
+			{
+				o = Instruction.OPCODE.MULT;
+			}
+			else if(opcode.equals("lshift"))
+			{
+				o = Instruction.OPCODE.LSHIFT;
+			}
+			else if(opcode.equals("rshift"))
+			{
+				o = Instruction.OPCODE.RSHIFT;
+			}
+			else
+			{
+				throw new InvalidOpcodeException(opcode);
+			}
+			
 			Register source1=getRegister(line.get(1));
 			Register source2=getRegister(line.get(2));
 			checkArrow(line.get(3));
 			Register target=getRegister(line.get(4));
-			instruction=new Instruction(opcode);
+			instruction=new Instruction(o);
 			instruction.setSource1(source1);
 			instruction.setSource2(source2);
 			instruction.setTarget(target);
 			
 		}
-		else if(opcode.equals(Instruction.validOpcodeWithImmediateValue))
+		else if(opcode.equals(Instruction.OUTPUT))
 		{
 			//output
 			if(line.size()>2)
 			{
 				throw new ExtraTokenException();
 			}
-			instruction=new Instruction(opcode);
+			instruction=new Instruction(Instruction.OPCODE.OUTPUT);
 			
 			try
 			{
@@ -52,7 +79,7 @@ public class Parser {
 			
 			
 		}
-		else if(opcode.equals(Instruction.validOpcodeWithTargetImmediateValue))
+		else if(opcode.equals(Instruction.LOADI))
 		{
 			//loadI
 			if(line.size()>4)
@@ -61,7 +88,7 @@ public class Parser {
 			}
 			Register target=getRegister(line.get(3));
 			checkArrow(line.get(2));
-			instruction=new Instruction(opcode);
+			instruction=new Instruction(Instruction.OPCODE.LOADI);
 			instruction.setTarget(target);
 	
 			try
@@ -74,7 +101,7 @@ public class Parser {
 				throw new ImmediateValueNotIntegerException(line.get(1));
 			}
 		}
-		else if(opcode.equals(Instruction.validOpcodeWithSource1Source2))
+		else if(opcode.equals(Instruction.STORE))
 		{
 			//store
 			if(line.size()>4)
@@ -84,11 +111,11 @@ public class Parser {
 			Register source1=getRegister(line.get(1));
 			Register source2=getRegister(line.get(3));
 			checkArrow(line.get(2));
-			instruction=new Instruction(opcode);
+			instruction=new Instruction(Instruction.OPCODE.STORE);
 			instruction.setSource1(source1);
 			instruction.setSource2(source2);
 		}
-		else if(opcode.equals(Instruction.validOpcodeWithSource1Target))
+		else if(opcode.equals(Instruction.LOAD))
 		{
 			//load
 			if(line.size()>4)
@@ -98,7 +125,7 @@ public class Parser {
 			Register source1=getRegister(line.get(1));
 			checkArrow(line.get(2));
 			Register target=getRegister(line.get(3));
-			instruction=new Instruction(opcode);
+			instruction=new Instruction(Instruction.OPCODE.LOAD);
 			instruction.setSource1(source1);
 			instruction.setTarget(target);
 		}
