@@ -120,13 +120,22 @@ public class DependencyGraphCreater {
 	private void calculateDelay(Node root, int delay)
 	{
 		delay += Instruction.DELAYMAP.get(root.getInstruction().getOpcode());
-		root.setDelay(delay);
-		ArrayList<Node> currentPredecessor = root.getPredecessors();
-		for(int i=0; i<currentPredecessor.size(); i++)
+		int prevDelay = root.getDelay();
+		if(delay > prevDelay)
 		{
-			Node currentNode = currentPredecessor.get(i);
-			calculateDelay(currentNode, delay);
+			root.setDelay(delay);
+			ArrayList<Node> currentPredecessor = root.getPredecessors();
+			for(int i=0; i<currentPredecessor.size(); i++)
+			{
+				Node currentNode = currentPredecessor.get(i);
+				calculateDelay(currentNode, delay);
+			}
 		}
+		else
+		{
+			//already have a bigger delay, no action needed.
+		}
+		
 	}
 	
 	public void print()
