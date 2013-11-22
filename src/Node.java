@@ -2,12 +2,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class Node {
+public class Node  {
 	
 	private Instruction instruction;
-	private int delay;
+	private int priority;
 	private ArrayList<Node> predecessors;
 	private ArrayList<Node> successors;
+	
+	private int startCycle;
+	private int delay;
 	
 	public Node(Instruction instruction)
 	{
@@ -15,6 +18,8 @@ public class Node {
 		
 		this.predecessors = new ArrayList<Node>();
 		this.successors = new ArrayList<Node>();
+		
+		this.delay = Instruction.DELAYMAP.get(instruction.getOpcode());
 	}
 
 	public Instruction getInstruction() {
@@ -25,12 +30,12 @@ public class Node {
 		this.instruction = instruction;
 	}
 
-	public int getDelay() {
-		return delay;
+	public int getPriority() {
+		return priority;
 	}
 
-	public void setDelay(int delay) {
-		this.delay = delay;
+	public void setPriority(int priority) {
+		this.priority = priority;
 	}
 	
 	public void addPredecessor(Node node)
@@ -59,11 +64,27 @@ public class Node {
 		this.successors = successors;
 	}
 	
+	public int getStartCycle() {
+		return startCycle;
+	}
+
+	public void setStartCycle(int startCycle) {
+		this.startCycle = startCycle;
+	}
+
+	public int getDelay() {
+		return delay;
+	}
+
+	private void setDelay(int delay) {
+		this.delay = delay;
+	}
+
 	@Override
 	public String toString()
 	{
 		String s = "\n{\n";
-		s+=instruction + ": "+delay+"\n";
+		s+=instruction + ": "+priority+"\n";
 		
 		s+="Predecessors: \n";
 		Iterator<Node> iterP = this.predecessors.iterator();
@@ -84,6 +105,13 @@ public class Node {
 		
 		return s;
 	}
+
+//	@Override
+//	public int compareTo(Node o) {
+//		//To make the ready queue in decending order, this method will return the opposite result
+//		return  o.priority - this.priority;
+//		
+//	}
 	
 
 }

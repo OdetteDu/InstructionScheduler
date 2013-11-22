@@ -1,94 +1,65 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import exception.ExtraTokenException;
-import exception.ImmediateValueNotIntegerException;
-import exception.InvalidArrowException;
-import exception.InvalidCommandLineArgumentException;
-import exception.InvalidOpcodeException;
-import exception.InvalidRegisterNameException;
-import exception.RenameConflictException;
-import exception.UseUndefinedRegisterException;
-
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 
 public class InstructionScheduler {
-
-	public static int NUM_REGISTERS = 256;
 	
-	private String filePath;
-	private ArrayList<Instruction> instructions;
-
-	public InstructionScheduler(String filePath)
+	public void run(HashSet<Node> leaves)
 	{
-		instructions=new ArrayList<Instruction>();
-		this.filePath=filePath;
+		schedule(leaves);
 	}
-
-	public void readFile() throws ImmediateValueNotIntegerException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException
+	
+	private void schedule(HashSet<Node> leaves)
 	{
-		try
-		{
-			FileReader fr=new FileReader(filePath);
-			BufferedReader br=new BufferedReader(fr);
-			Scanner scanner=new Scanner();
-			Parser parser=new Parser();
-
-			String temp=br.readLine();
-			while(temp!=null)
+		int cycle = 1;
+		
+		//ready = leaves
+		PriorityQueue<Node> ready = new PriorityQueue<Node>(leaves.size(), new Comparator<Node>(){
+			@Override
+			public int compare(Node o1, Node o2) 
 			{
-				ArrayList<String> tokens=scanner.scanLine(temp);
-				if(!tokens.isEmpty())
+				//To make the ready queue in descending order, this method will return the opposite result
+				return o2.getPriority() - o1.getPriority();
+			}
+		});
+		Iterator<Node> iterLeaves = leaves.iterator();
+		while(iterLeaves.hasNext())
+		{
+			ready.add(iterLeaves.next());
+		}
+		
+		HashSet<Node> active = new HashSet<Node>();
+		
+		while(!ready.isEmpty() && !active.isEmpty())
+		{
+			Iterator<Node> iterActive = active.iterator();
+			while(iterActive.hasNext())
+			{
+				Node currentNode = iterActive.next();
+				if(currentNode.getStartCycle()+currentNode.getDelay() < cycle)
 				{
-					Instruction instruction=parser.parseLine(tokens);
-					instructions.add(instruction);
+					active.remove(currentNode);
+					ArrayList<Node> successors = currentNode.getSuccessors();
+					for(int i=0; i<successors.size(); i++)
+					{
+						Node s = successors.get(i);
+						//if (s is ready)
+						//ready.add(s);
+					}
 				}
-
-				temp=br.readLine();
+				
 			}
-			br.close();
-		} 
-		catch (FileNotFoundException e) 
-		{
-			throw new InvalidCommandLineArgumentException("The filePath is invalid or the file can not be found.");
-		}
-		catch (IOException e) {
-			throw new InvalidCommandLineArgumentException("The file is unavailable to open correctly. ");
-		} 
-	}
-
-	public void run() throws ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException, RenameConflictException
-	{
-		readFile();
-		instructions = new Renamer(instructions).renameInstructions();
-		DependencyGraphCreater graphCreater = new DependencyGraphCreater(instructions);
-		graphCreater.create();
-		graphCreater.calculateDelay();
-		graphCreater.printTopDown();
-	}
-
-	public static void main(String args[])
-	{
-		try{
-			if(args.length!=1)
+			
+			if(!ready.isEmpty())
 			{
-				throw new InvalidCommandLineArgumentException();
+				Node currentNode = ready.poll();
+				currentNode.setStartCycle(cycle);
+				active.add(currentNode);
 			}
-
-			String filePath=args[0];
-			InstructionScheduler registerAllocator=new InstructionScheduler(filePath);
-			registerAllocator.run();
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
+			cycle++;
 		}
 	}
-
-
-
-
 
 }

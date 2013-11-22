@@ -21,7 +21,7 @@ public class Renamer {
 	private int getAvailableName() throws RenameConflictException
 	{
 		renameCount--;
-		int newName = InstructionScheduler.NUM_REGISTERS+renameCount;
+		int newName = Main.NUM_REGISTERS+renameCount;
 		if(newName < maxRegisterNumber)
 		{
 			throw new RenameConflictException();

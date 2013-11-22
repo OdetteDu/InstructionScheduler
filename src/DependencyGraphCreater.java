@@ -18,7 +18,30 @@ public class DependencyGraphCreater {
 		leaves = new HashSet<Node>();
 	}
 	
-	public void create()
+	public HashSet<Node> getRoots() {
+		return roots;
+	}
+
+	public void setRoots(HashSet<Node> roots) {
+		this.roots = roots;
+	}
+
+	public HashSet<Node> getLeaves() {
+		return leaves;
+	}
+
+	public void setLeaves(HashSet<Node> leaves) {
+		this.leaves = leaves;
+	}
+	
+	public void run()
+	{
+		create();
+		calculatePriority();
+		printTopDown();
+	}
+
+	private void create()
 	{
 		HashMap<Register, LinkedList<Node>> waitForPredecessor = new HashMap<Register, LinkedList<Node>>();
 		
@@ -209,27 +232,27 @@ public class DependencyGraphCreater {
 		}
 	}
 	
-	public void calculateDelay()
+	private void calculatePriority()
 	{
 		Iterator<Node> iter = roots.iterator();
 		while(iter.hasNext())
 		{
-			calculateDelay(iter.next(), 0);
+			calculatePriority(iter.next(), 0);
 		}
 	}
 	
-	private void calculateDelay(Node root, int delay)
+	private void calculatePriority(Node root, int priority)
 	{
-		delay += Instruction.DELAYMAP.get(root.getInstruction().getOpcode());
-		int prevDelay = root.getDelay();
-		if(delay > prevDelay)
+		priority += Instruction.DELAYMAP.get(root.getInstruction().getOpcode());
+		int prevDelay = root.getPriority();
+		if(priority > prevDelay)
 		{
-			root.setDelay(delay);
+			root.setPriority(priority);
 			ArrayList<Node> currentPredecessor = root.getPredecessors();
 			for(int i=0; i<currentPredecessor.size(); i++)
 			{
 				Node currentNode = currentPredecessor.get(i);
-				calculateDelay(currentNode, delay);
+				calculatePriority(currentNode, priority);
 			}
 		}
 		else
