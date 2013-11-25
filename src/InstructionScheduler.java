@@ -48,10 +48,20 @@ public class InstructionScheduler {
 				active.remove(currentNode);
 
 				//all its successor might be ready
-				ArrayList<Node> successors = currentNode.getSuccessors();
-				for(int i=0; i<successors.size(); i++)
+//				ArrayList<Node> successors = currentNode.getSuccessors();
+//				for(int i=0; i<successors.size(); i++)
+//				{
+//					Node s = successors.get(i);
+//					if (s.isReady())
+//					{
+//						ready.add(s);
+//					}
+//				}
+				
+				Iterator<Node> iter = currentNode.getSuccessors().iterator();
+				while(iter.hasNext())
 				{
-					Node s = successors.get(i);
+					Node s = iter.next();
 					if (s.isReady())
 					{
 						ready.add(s);

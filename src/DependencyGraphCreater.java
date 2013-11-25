@@ -6,18 +6,18 @@ import java.util.LinkedList;
 
 
 public class DependencyGraphCreater {
-	
+
 	private ArrayList<Instruction> instructions;
 	private HashSet<Node> roots;
 	private HashSet<Node> leaves;
-	
+
 	public DependencyGraphCreater(ArrayList<Instruction> instructions)
 	{
 		this.instructions = instructions;
 		roots = new HashSet<Node>();
 		leaves = new HashSet<Node>();
 	}
-	
+
 	public HashSet<Node> getRoots() {
 		return roots;
 	}
@@ -33,7 +33,7 @@ public class DependencyGraphCreater {
 	public void setLeaves(HashSet<Node> leaves) {
 		this.leaves = leaves;
 	}
-	
+
 	public void run()
 	{
 		create();
@@ -45,7 +45,7 @@ public class DependencyGraphCreater {
 		HashMap<Register, LinkedList<Node>> waitForPredecessor = new HashMap<Register, LinkedList<Node>>();
 		Node prevStore = null;
 		LinkedList<Node> waitForStore = new LinkedList<Node>();
-		
+
 		int i=instructions.size()-1;
 		while(i>=0)
 		{
@@ -53,9 +53,9 @@ public class DependencyGraphCreater {
 			instruction.setIndex(i);
 			Node currentNode = new Node(instruction);
 			leaves.add(currentNode);
-			
+
 			Instruction.OPCODE opcode = instruction.getOpcode();
-			
+
 			if(opcode==Instruction.OPCODE.OUTPUT)
 			{
 				//s+=" "+immediateValue;	
@@ -83,7 +83,7 @@ public class DependencyGraphCreater {
 				{
 					roots.add(currentNode);
 				}
-				
+
 				waitForStore.add(currentNode);
 			}
 			else if(opcode==Instruction.OPCODE.STORE)
@@ -91,7 +91,7 @@ public class DependencyGraphCreater {
 				//s+=" "+source1+" => "+source2;
 				Register source1=instruction.getSource1();
 				//use
-//				waitForPredecessor.put(source1, currentNode);
+				//				waitForPredecessor.put(source1, currentNode);
 				LinkedList<Node> nodesForSource1 = waitForPredecessor.get(source1);
 				if(nodesForSource1 != null)
 				{
@@ -104,10 +104,10 @@ public class DependencyGraphCreater {
 					nodesForSource1.add(currentNode);
 					waitForPredecessor.put(source1, nodesForSource1);
 				}
-				
+
 				Register source2=instruction.getSource2();
 				//use
-//				waitForPredecessor.put(source2, currentNode);
+				//				waitForPredecessor.put(source2, currentNode);
 				LinkedList<Node> nodesForSource2 = waitForPredecessor.get(source2);
 				if(nodesForSource2 != null)
 				{
@@ -120,19 +120,27 @@ public class DependencyGraphCreater {
 					nodesForSource2.add(currentNode);
 					waitForPredecessor.put(source2, nodesForSource2);
 				}
-				
+
 				if(prevStore != null)
 				{
-					Iterator<Node> iterWaitStore = waitForStore.iterator();
-					while(iterWaitStore.hasNext())
+					if(waitForStore.isEmpty())
 					{
-						Node c = iterWaitStore.next();
-						currentNode.addSuccessor(c);
-						c.addPredecessor(currentNode);
-						c.addSuccessor(prevStore);
-						prevStore.addPredecessor(c);
+						currentNode.addSuccessor(prevStore);
+						prevStore.addPredecessor(currentNode);
 					}
-					waitForStore = new LinkedList<Node>();
+					else
+					{
+						Iterator<Node> iterWaitStore = waitForStore.iterator();
+						while(iterWaitStore.hasNext())
+						{
+							Node c = iterWaitStore.next();
+							currentNode.addSuccessor(c);
+							c.addPredecessor(currentNode);
+							c.addSuccessor(prevStore);
+							prevStore.addPredecessor(c);
+						}
+						waitForStore = new LinkedList<Node>();
+					}
 				}
 				else
 				{
@@ -168,10 +176,10 @@ public class DependencyGraphCreater {
 				{
 					roots.add(currentNode);
 				}
-				
+
 				Register source1=instruction.getSource1();
 				//use
-//				waitForPredecessor.put(source1, currentNode);
+				//				waitForPredecessor.put(source1, currentNode);
 				LinkedList<Node> nodesForSource1 = waitForPredecessor.get(source1);
 				if(nodesForSource1 != null)
 				{
@@ -184,7 +192,7 @@ public class DependencyGraphCreater {
 					nodesForSource1.add(currentNode);
 					waitForPredecessor.put(source1, nodesForSource1);
 				}
-				
+
 				waitForStore.add(currentNode);
 			}
 			else
@@ -208,7 +216,7 @@ public class DependencyGraphCreater {
 				{
 					roots.add(currentNode);
 				}
-				
+
 				Register source1=instruction.getSource1();
 				LinkedList<Node> nodesForSource1 = waitForPredecessor.get(source1);
 				if(nodesForSource1 != null)
@@ -222,8 +230,8 @@ public class DependencyGraphCreater {
 					nodesForSource1.add(currentNode);
 					waitForPredecessor.put(source1, nodesForSource1);
 				}
-				
-				
+
+
 				Register source2=instruction.getSource2();
 				LinkedList<Node> nodesForSource2 = waitForPredecessor.get(source2);
 				if(nodesForSource2 != null)
@@ -240,19 +248,19 @@ public class DependencyGraphCreater {
 			}
 			i--;
 		}
-		
+
 		if(prevStore != null)
 		{
-		Iterator<Node> iterWaitStore = waitForStore.iterator();
-		while(iterWaitStore.hasNext())
-		{
-			Node c = iterWaitStore.next();
-			c.addSuccessor(prevStore);
-			prevStore.addPredecessor(c);
-		}
+			Iterator<Node> iterWaitStore = waitForStore.iterator();
+			while(iterWaitStore.hasNext())
+			{
+				Node c = iterWaitStore.next();
+				c.addSuccessor(prevStore);
+				prevStore.addPredecessor(c);
+			}
 		}
 	}
-	
+
 	private void calculatePriority()
 	{
 		Iterator<Node> iter = roots.iterator();
@@ -261,7 +269,7 @@ public class DependencyGraphCreater {
 			calculatePriority(iter.next(), 0);
 		}
 	}
-	
+
 	private void calculatePriority(Node root, int priority)
 	{
 		priority += Instruction.DELAYMAP.get(root.getInstruction().getOpcode());
@@ -269,10 +277,17 @@ public class DependencyGraphCreater {
 		if(priority > prevDelay)
 		{
 			root.setPriority(priority);
-			ArrayList<Node> currentPredecessor = root.getPredecessors();
-			for(int i=0; i<currentPredecessor.size(); i++)
+//			ArrayList<Node> currentPredecessor = root.getPredecessors();
+//			for(int i=0; i<currentPredecessor.size(); i++)
+//			{
+//				Node currentNode = currentPredecessor.get(i);
+//				calculatePriority(currentNode, priority);
+//			}
+			
+			Iterator<Node> iter = root.getPredecessors().iterator();
+			while(iter.hasNext())
 			{
-				Node currentNode = currentPredecessor.get(i);
+				Node currentNode = iter.next();
 				calculatePriority(currentNode, priority);
 			}
 		}
@@ -280,9 +295,9 @@ public class DependencyGraphCreater {
 		{
 			//already have a bigger delay, no action needed.
 		}
-		
+
 	}
-	
+
 	public void printButtomUp()
 	{
 		Printer.print(instructions);
@@ -293,7 +308,7 @@ public class DependencyGraphCreater {
 			Printer.printNodeButtomUp(iter.next(),printer);
 		}
 	}
-	
+
 	public void printTopDown()
 	{
 		Printer.print(instructions);

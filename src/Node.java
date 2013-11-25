@@ -6,8 +6,8 @@ public class Node  {
 	
 	private Instruction instruction;
 	private int priority;
-	private ArrayList<Node> predecessors;
-	private ArrayList<Node> successors;
+	private HashSet<Node> predecessors;
+	private HashSet<Node> successors;
 	
 	private int startCycle;
 	private int delay;
@@ -17,8 +17,8 @@ public class Node  {
 	{
 		this.instruction = instruction;
 		
-		this.predecessors = new ArrayList<Node>();
-		this.successors = new ArrayList<Node>();
+		this.predecessors = new HashSet<Node>();
+		this.successors = new HashSet<Node>();
 		
 		this.delay = Instruction.DELAYMAP.get(instruction.getOpcode());
 	}
@@ -44,11 +44,11 @@ public class Node  {
 		this.predecessors.add(node);
 	}
 
-	public ArrayList<Node> getPredecessors() {
+	public HashSet<Node> getPredecessors() {
 		return predecessors;
 	}
 
-	public void setPredecessors(ArrayList<Node> predecessors) {
+	public void setPredecessors(HashSet<Node> predecessors) {
 		this.predecessors = predecessors;
 	}
 	
@@ -57,11 +57,11 @@ public class Node  {
 		this.successors.add(node);
 	}
 
-	public ArrayList<Node> getSuccessors() {
+	public HashSet<Node> getSuccessors() {
 		return successors;
 	}
 
-	public void setSuccessors(ArrayList<Node> successors) {
+	public void setSuccessors(HashSet<Node> successors) {
 		this.successors = successors;
 	}
 	
@@ -90,10 +90,11 @@ public class Node  {
 	}
 	
 	public boolean isReady()
-	{
-		for (int i=0; i<predecessors.size(); i++)
+	{	
+		Iterator<Node> iter = predecessors.iterator();
+		while(iter.hasNext())
 		{
-			Node p = predecessors.get(i);
+			Node p = iter.next();
 			if(!p.isCompleted())
 			{
 				return false;
