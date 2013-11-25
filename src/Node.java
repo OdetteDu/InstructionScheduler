@@ -11,6 +11,7 @@ public class Node  {
 	
 	private int startCycle;
 	private int delay;
+	private boolean completed;
 	
 	public Node(Instruction instruction)
 	{
@@ -76,8 +77,30 @@ public class Node  {
 		return delay;
 	}
 
-	private void setDelay(int delay) {
-		this.delay = delay;
+//	private void setDelay(int delay) {
+//		this.delay = delay;
+//	}
+
+	public boolean isCompleted() {
+		return completed;
+	}
+
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
+	
+	public boolean isReady()
+	{
+		for (int i=0; i<predecessors.size(); i++)
+		{
+			Node p = predecessors.get(i);
+			if(!p.isCompleted())
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	@Override
