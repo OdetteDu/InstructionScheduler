@@ -3,3 +3,4 @@ loadI 1064 => r2
 add r1, r2 => r1
 mult r1, r2 => r2
 
+

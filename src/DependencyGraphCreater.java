@@ -38,12 +38,13 @@ public class DependencyGraphCreater {
 	{
 		create();
 		calculatePriority();
-		printTopDown();
 	}
 
 	private void create()
 	{
 		HashMap<Register, LinkedList<Node>> waitForPredecessor = new HashMap<Register, LinkedList<Node>>();
+		Node prevStore = null;
+		LinkedList<Node> waitForStore = new LinkedList<Node>();
 		
 		int i=instructions.size()-1;
 		while(i>=0)
@@ -58,6 +59,7 @@ public class DependencyGraphCreater {
 			if(opcode==Instruction.OPCODE.OUTPUT)
 			{
 				//s+=" "+immediateValue;	
+				waitForStore.add(currentNode);
 			}
 			else if(opcode==Instruction.OPCODE.LOADI)
 			{
@@ -81,6 +83,8 @@ public class DependencyGraphCreater {
 				{
 					roots.add(currentNode);
 				}
+				
+				waitForStore.add(currentNode);
 			}
 			else if(opcode==Instruction.OPCODE.STORE)
 			{
@@ -116,23 +120,38 @@ public class DependencyGraphCreater {
 					nodesForSource2.add(currentNode);
 					waitForPredecessor.put(source2, nodesForSource2);
 				}
+				
+				if(prevStore != null)
+				{
+					Iterator<Node> iterWaitStore = waitForStore.iterator();
+					while(iterWaitStore.hasNext())
+					{
+						Node c = iterWaitStore.next();
+						currentNode.addSuccessor(c);
+						c.addPredecessor(currentNode);
+						c.addSuccessor(prevStore);
+						prevStore.addPredecessor(c);
+					}
+					waitForStore = new LinkedList<Node>();
+				}
+				else
+				{
+					Iterator<Node> iterWaitStore = waitForStore.iterator();
+					while(iterWaitStore.hasNext())
+					{
+						Node c = iterWaitStore.next();
+						currentNode.addSuccessor(c);
+						c.addPredecessor(currentNode);
+					}
+					waitForStore = new LinkedList<Node>();
+				}
+				prevStore = currentNode;
 			}
 			else if(opcode==Instruction.OPCODE.LOAD)
 			{
 				//s+=" "+source1+" => "+target;	
 				Register target=instruction.getTarget();
 				//define
-//				Node successor = waitForPredecessor.remove(target);
-//				if(successor != null)
-//				{
-//					successor.addPredecessor(currentNode);
-//					currentNode.addSuccessor(successor);
-//					leaves.remove(successor);
-//				}
-//				else
-//				{
-//					roots.add(currentNode);
-//				}
 				LinkedList<Node> waits = waitForPredecessor.remove(target);
 				if(waits != null)
 				{
@@ -165,23 +184,14 @@ public class DependencyGraphCreater {
 					nodesForSource1.add(currentNode);
 					waitForPredecessor.put(source1, nodesForSource1);
 				}
+				
+				waitForStore.add(currentNode);
 			}
 			else
 			{
 				//s+=" "+source1+" "+source2+" => "+target;	
 				Register target=instruction.getTarget();
 
-//				Node successor = waitForPredecessor.remove(target);
-//				if(successor != null)
-//				{
-//					successor.addPredecessor(currentNode);
-//					currentNode.addSuccessor(successor);
-//					leaves.remove(successor);
-//				}
-//				else
-//				{
-//					roots.add(currentNode);
-//				}
 				LinkedList<Node> waits = waitForPredecessor.remove(target);
 				if(waits != null)
 				{
@@ -229,6 +239,17 @@ public class DependencyGraphCreater {
 				}
 			}
 			i--;
+		}
+		
+		if(prevStore != null)
+		{
+		Iterator<Node> iterWaitStore = waitForStore.iterator();
+		while(iterWaitStore.hasNext())
+		{
+			Node c = iterWaitStore.next();
+			c.addSuccessor(prevStore);
+			prevStore.addPredecessor(c);
+		}
 		}
 	}
 	
