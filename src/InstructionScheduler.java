@@ -117,6 +117,7 @@ public class InstructionScheduler {
 				{
 					ready.add(iter.next());
 				}
+				backToReady = new HashSet<Node>();
 			}
 
 			scheduleInstruction(cycle);
@@ -140,6 +141,7 @@ public class InstructionScheduler {
 				{
 					ready.add(iter.next());
 				}
+				backToReady = new HashSet<Node>();
 			}
 		}
 		else if(machine.isUnit2Available(cycle))
@@ -161,6 +163,7 @@ public class InstructionScheduler {
 				{
 					ready.add(iter.next());
 				}
+				backToReady = new HashSet<Node>();
 			}
 		}
 	}
@@ -181,8 +184,13 @@ public class InstructionScheduler {
 			Node n = iter.next();
 			if(n.getSuccessors().size() > count)
 			{
+				backToReady.add(result);
 				result = n;
 				count = n.getSuccessors().size();
+			}
+			else
+			{
+				backToReady.add(n);
 			}
 		}
 
@@ -242,6 +250,7 @@ public class InstructionScheduler {
 		else
 		{
 			Node first = ready.poll();
+			batch.add(first);
 			while(!ready.isEmpty() && ready.peek().getPriority() == first.getPriority())
 			{
 				batch.add(ready.poll());

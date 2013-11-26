@@ -123,7 +123,7 @@ public class Machine {
 	
 	public void print()
 	{
-		for(int i=0; i<unit1.size(); i++)
+		for(int i=1; i<unit1.size(); i++)
 		{
 			print(i);
 		}
