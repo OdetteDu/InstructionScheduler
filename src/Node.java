@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -10,7 +10,7 @@ public class Node  {
 	private HashSet<Node> successors;
 	
 	private int startCycle;
-	private int delay;
+	//private int delay;
 	private boolean completed;
 	
 	public Node(Instruction instruction)
@@ -20,7 +20,7 @@ public class Node  {
 		this.predecessors = new HashSet<Node>();
 		this.successors = new HashSet<Node>();
 		
-		this.delay = Instruction.DELAYMAP.get(instruction.getOpcode());
+		//this.delay = Instruction.DELAYMAP.get(instruction.getOpcode());
 	}
 
 	public Instruction getInstruction() {
@@ -74,7 +74,7 @@ public class Node  {
 	}
 
 	public int getDelay() {
-		return delay;
+		return instruction.getDelay();
 	}
 
 //	private void setDelay(int delay) {

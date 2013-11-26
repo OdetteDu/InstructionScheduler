@@ -39,6 +39,23 @@ public class Instruction {
 		this.opcode=opcode;
 	}
 	
+	@Override
+	public boolean equals(Object obj)
+	{
+		Instruction in = (Instruction) obj;
+		return this.opcode == in.opcode && 
+			   this.source1 == in.source1 &&
+			   this.source2 == in.source2 &&
+			   this.target == in.target &&
+			   this.immediateValue == in.immediateValue;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return opcode.hashCode() + source1.hashCode() + source2.hashCode() + target.hashCode() + immediateValue;
+	}
+	
 	public String toString()
 	{	
 		String s=opcode+" ";
@@ -58,6 +75,10 @@ public class Instruction {
 		else if(opcode==OPCODE.LOAD)
 		{
 			s+=" "+source1+" => "+target;	
+		}
+		else if(opcode==OPCODE.NOP)
+		{
+			s=s.substring(0, s.length()-1);
 		}
 		else
 		{
@@ -121,6 +142,10 @@ public class Instruction {
 		}
 		
 		return b;
+	}
+
+	public int getDelay() {
+		return DELAYMAP.get(opcode);
 	}
 
 }

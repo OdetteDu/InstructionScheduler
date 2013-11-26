@@ -66,26 +66,23 @@ public class Main {
 		DependencyGraphCreater graphCreater = new DependencyGraphCreater(instructions);
 		graphCreater.run();
 		graphCreater.printTopDown();
-		InstructionScheduler scheduler = new InstructionScheduler();
-		scheduler.run(graphCreater.getLeaves());
+		InstructionScheduler scheduler = new InstructionScheduler(graphCreater.getLeaves());
+		scheduler.run();
 	}
 
-	public static void main(String args[])
+	public static void main(String args[]) throws InvalidCommandLineArgumentException, ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, RenameConflictException
 	{
-		try{
+
 			if(args.length!=1)
 			{
 				throw new InvalidCommandLineArgumentException();
 			}
 
 			String filePath=args[0];
-			Main registerAllocator=new Main(filePath);
-			registerAllocator.run();
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-		}
+			Main main=new Main(filePath);
+			main.run();
+
+
 	}
 
 
