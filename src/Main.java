@@ -27,16 +27,17 @@ public class Main {
 		this.filePath=filePath;
 	}
 
-	public void readFile() throws ImmediateValueNotIntegerException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException
+	public void readFile() throws ImmediateValueNotIntegerException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException, IOException
 	{
-		try
-		{
+//		try
+//		{
 			FileReader fr=new FileReader(filePath);
 			BufferedReader br=new BufferedReader(fr);
 			Scanner scanner=new Scanner();
 			Parser parser=new Parser();
 
 			String temp=br.readLine();
+			
 			while(temp!=null)
 			{
 				ArrayList<String> tokens=scanner.scanLine(temp);
@@ -49,28 +50,29 @@ public class Main {
 				temp=br.readLine();
 			}
 			br.close();
-		} 
-		catch (FileNotFoundException e) 
-		{
-			throw new InvalidCommandLineArgumentException("The filePath is invalid or the file can not be found.");
-		}
-		catch (IOException e) {
-			throw new InvalidCommandLineArgumentException("The file is unavailable to open correctly. ");
-		} 
+//		} 
+//		catch (FileNotFoundException e) 
+//		{
+//			throw new InvalidCommandLineArgumentException("The filePath is invalid or the file can not be found.");
+//		}
+//		catch (IOException e) {
+//			throw new InvalidCommandLineArgumentException("The file is unavailable to open correctly. ");
+//		} 
 	}
 
-	public void run() throws ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException, RenameConflictException
+	public void run() throws ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, InvalidCommandLineArgumentException, RenameConflictException, IOException
 	{
 		readFile();
 		instructions = new Renamer(instructions).renameInstructions();
 		DependencyGraphCreater graphCreater = new DependencyGraphCreater(instructions);
 		graphCreater.run();
 		graphCreater.printTopDown();
+		graphCreater.printButtomUp();
 		InstructionScheduler scheduler = new InstructionScheduler(graphCreater.getLeaves());
 		scheduler.run();
 	}
 
-	public static void main(String args[]) throws InvalidCommandLineArgumentException, ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, RenameConflictException
+	public static void main(String args[]) throws InvalidCommandLineArgumentException, ImmediateValueNotIntegerException, UseUndefinedRegisterException, InvalidOpcodeException, InvalidRegisterNameException, InvalidArrowException, ExtraTokenException, RenameConflictException, IOException
 	{
 
 			if(args.length!=1)

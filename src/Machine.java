@@ -128,4 +128,10 @@ public class Machine {
 			print(i);
 		}
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Unit1: "+unit1+"\nUnit2: "+unit2;
+	}
 }

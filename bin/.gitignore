@@ -1,2 +1,15 @@
+/DependencyGraphCreater.class
+/ExtraTokenException.class
+/Instruction$OPCODE.class
+/Instruction.class
 /InstructionScheduler$1.class
+/InstructionScheduler.class
 /Machine.class
+/Main.class
+/Node.class
+/Parser.class
+/Printer.class
+/Register.class
+/Renamer.class
+/Scanner.class
+/exception

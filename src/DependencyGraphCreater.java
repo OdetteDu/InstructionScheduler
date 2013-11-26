@@ -60,6 +60,7 @@ public class DependencyGraphCreater {
 			{
 				//s+=" "+immediateValue;	
 				waitForStore.add(currentNode);
+				roots.add(currentNode);
 			}
 			else if(opcode==Instruction.OPCODE.LOADI)
 			{
@@ -120,13 +121,17 @@ public class DependencyGraphCreater {
 					nodesForSource2.add(currentNode);
 					waitForPredecessor.put(source2, nodesForSource2);
 				}
+				
+				roots.add(currentNode);
 
 				if(prevStore != null)
 				{
-					if(waitForStore.isEmpty())
+					if(waitForStore.isEmpty())//no loads between store
 					{
 						currentNode.addSuccessor(prevStore);
 						prevStore.addPredecessor(currentNode);
+						leaves.remove(prevStore);
+						roots.remove(currentNode);
 					}
 					else
 					{
@@ -138,6 +143,10 @@ public class DependencyGraphCreater {
 							c.addPredecessor(currentNode);
 							c.addSuccessor(prevStore);
 							prevStore.addPredecessor(c);
+							leaves.remove(prevStore);
+							leaves.remove(c);
+							roots.remove(currentNode);
+							roots.remove(c);
 						}
 						waitForStore = new LinkedList<Node>();
 					}
@@ -150,6 +159,8 @@ public class DependencyGraphCreater {
 						Node c = iterWaitStore.next();
 						currentNode.addSuccessor(c);
 						c.addPredecessor(currentNode);
+						leaves.remove(c);
+						roots.remove(currentNode);
 					}
 					waitForStore = new LinkedList<Node>();
 				}
@@ -272,17 +283,11 @@ public class DependencyGraphCreater {
 
 	private void calculatePriority(Node root, int priority)
 	{
-		priority += Instruction.DELAYMAP.get(root.getInstruction().getOpcode());
+		priority += root.getInstruction().getDelay();
 		int prevDelay = root.getPriority();
 		if(priority > prevDelay)
 		{
 			root.setPriority(priority);
-//			ArrayList<Node> currentPredecessor = root.getPredecessors();
-//			for(int i=0; i<currentPredecessor.size(); i++)
-//			{
-//				Node currentNode = currentPredecessor.get(i);
-//				calculatePriority(currentNode, priority);
-//			}
 			
 			Iterator<Node> iter = root.getPredecessors().iterator();
 			while(iter.hasNext())
@@ -300,24 +305,26 @@ public class DependencyGraphCreater {
 
 	public void printButtomUp()
 	{
-		Printer.print(instructions);
+		//Printer.print(instructions);
 		HashSet<Node> printer = new HashSet<Node>();
 		Iterator<Node> iter = roots.iterator();
 		while (iter.hasNext())
 		{
 			Printer.printNodeButtomUp(iter.next(),printer);
 		}
+		System.out.println();
 	}
 
 	public void printTopDown()
 	{
-		Printer.print(instructions);
+		//Printer.print(instructions);
 		HashSet<Node> printer = new HashSet<Node>();
 		Iterator<Node> iter = leaves.iterator();
 		while (iter.hasNext())
 		{
 			Printer.printNodeTopDown(iter.next(),printer);
 		}
+		System.out.println();
 	}
 
 }

@@ -47,10 +47,10 @@ public class InstructionScheduler {
 	{
 		int cycle = 1;
 
-		while(!ready.isEmpty() || !active.isEmpty())
+		while(!ready.isEmpty() || cycle < active.size())
 		{
 			//for every elements in the active queue
-			if(active.size()>cycle)
+			if(cycle < active.size())
 			{
 				Iterator<Node> iterActive = active.get(cycle).iterator();
 				while(iterActive.hasNext())
@@ -73,6 +73,7 @@ public class InstructionScheduler {
 					}
 				}
 			}
+
 
 			if(!ready.isEmpty())
 			{
@@ -170,7 +171,7 @@ public class InstructionScheduler {
 		{
 			return null;
 		}
-		
+
 		Iterator<Node> iter = nodes.iterator();
 		Node result = iter.next();
 		int count = result.getSuccessors().size();
