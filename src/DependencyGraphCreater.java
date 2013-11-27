@@ -45,6 +45,7 @@ public class DependencyGraphCreater {
 		HashMap<Register, LinkedList<Node>> waitForPredecessor = new HashMap<Register, LinkedList<Node>>();
 		Node prevStore = null;
 		LinkedList<Node> waitForStore = new LinkedList<Node>();
+		Node prevOutput = null;
 
 		int i=instructions.size()-1;
 		while(i>=0)
@@ -61,6 +62,16 @@ public class DependencyGraphCreater {
 				//s+=" "+immediateValue;	
 				waitForStore.add(currentNode);
 				roots.add(currentNode);
+				
+				if(prevOutput != null)
+				{
+					currentNode.addSuccessor(prevOutput);
+					prevOutput.addPredecessor(currentNode);
+					leaves.remove(prevOutput);
+					roots.remove(currentNode);
+				}
+				
+				prevOutput = currentNode;
 			}
 			else if(opcode==Instruction.OPCODE.loadI)
 			{
