@@ -6,6 +6,7 @@ public class Node  {
 	
 	private Instruction instruction;
 	private int priority;
+	private int numOfDescendants;
 	private HashSet<Node> predecessors;
 	private HashSet<Node> successors;
 	
@@ -19,6 +20,8 @@ public class Node  {
 		
 		this.predecessors = new HashSet<Node>();
 		this.successors = new HashSet<Node>();
+		
+		numOfDescendants = -1;
 		
 		//this.delay = Instruction.DELAYMAP.get(instruction.getOpcode());
 	}
@@ -39,6 +42,14 @@ public class Node  {
 		this.priority = priority;
 	}
 	
+	public int getNumOfDescendants() {
+		return numOfDescendants;
+	}
+
+	public void setNumOfDescendants(int numOfDescendants) {
+		this.numOfDescendants = numOfDescendants;
+	}
+
 	public void addPredecessor(Node node)
 	{
 		this.predecessors.add(node);

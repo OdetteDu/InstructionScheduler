@@ -112,7 +112,7 @@ public class InstructionScheduler {
 
 				makeActive(toBeSchedule, cycle);	
 			}
-			
+
 			Iterator<Node> iter = backToReady.iterator();
 			while(iter.hasNext())
 			{
@@ -136,7 +136,7 @@ public class InstructionScheduler {
 				machine.scheduleUnit1(cycle, toBeSchedule.getInstruction());
 				makeActive(toBeSchedule, cycle);
 			}
-			
+
 			Iterator<Node> iter = backToReady.iterator();
 			while(iter.hasNext())
 			{
@@ -158,7 +158,7 @@ public class InstructionScheduler {
 				machine.scheduleUnit2(cycle, toBeSchedule.getInstruction());
 				makeActive(toBeSchedule, cycle);
 			}
-			
+
 			Iterator<Node> iter = backToReady.iterator();
 			while(iter.hasNext())
 			{
@@ -177,16 +177,49 @@ public class InstructionScheduler {
 
 		Iterator<Node> iter = nodes.iterator();
 		Node result = iter.next();
-		int count = result.getSuccessors().size();
+		//int count = result.getSuccessors().size();
 
 		while(iter.hasNext())
 		{
 			Node n = iter.next();
-			if(n.getSuccessors().size() > count)
+//			if(n.getSuccessors().size() > result.getSuccessors().size())
+//			{
+//				backToReady.add(result);
+//				result = n;
+//			}
+//			else if(n.getSuccessors().size() == result.getSuccessors().size())
+//			{
+//				if(n.getDelay() > result.getDelay())
+//				{
+//					backToReady.add(result);
+//					result = n;
+//				}
+//				else
+//				{
+//					backToReady.add(n);
+//				}
+//			}
+//			else
+//			{
+//				backToReady.add(n);
+//			}
+
+			if(n.getNumOfDescendants() > result.getNumOfDescendants())
 			{
 				backToReady.add(result);
 				result = n;
-				count = n.getSuccessors().size();
+			}
+			else if(n.getNumOfDescendants() == result.getNumOfDescendants())
+			{
+				if(n.getSuccessors().size() > result.getSuccessors().size())
+				{
+					backToReady.add(result);
+					result = n;
+				}	
+				else
+				{
+					backToReady.add(n);
+				}
 			}
 			else
 			{

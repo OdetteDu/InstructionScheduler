@@ -46,7 +46,7 @@ public class Printer<E> {
 		{
 			processed.add(root);
 			Instruction currentInstruction = root.getInstruction();
-			System.out.println(currentInstruction.getIndex()+" [label= \""+currentInstruction+" "+root.getPriority()+"\"];");
+			System.out.println(currentInstruction.getIndex()+" [label= \""+currentInstruction+" "+root.getPriority()+" "+root.getNumOfDescendants()+"\"];");
 			
 			Iterator<Node> iter = root.getPredecessors().iterator();
 			while(iter.hasNext())
@@ -66,7 +66,7 @@ public class Printer<E> {
 		{
 			processed.add(root);
 			Instruction currentInstruction = root.getInstruction();
-			System.out.println(currentInstruction.getIndex()+" [label= \""+currentInstruction+" "+root.getPriority()+"\"];");
+			System.out.println(currentInstruction.getIndex()+" [label= \""+currentInstruction+" "+root.getPriority()+" "+root.getNumOfDescendants()+"\"];");
 			
 			Iterator<Node> iter = root.getSuccessors().iterator();
 			while(iter.hasNext())

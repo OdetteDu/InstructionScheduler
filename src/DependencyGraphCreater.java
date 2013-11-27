@@ -38,6 +38,7 @@ public class DependencyGraphCreater {
 	{
 		create();
 		calculatePriority();
+		calculateNumOfDescendants();
 	}
 
 	private void create()
@@ -311,7 +312,32 @@ public class DependencyGraphCreater {
 		{
 			//already have a bigger delay, no action needed.
 		}
-
+	}
+	
+	private void calculateNumOfDescendants()
+	{
+		Iterator<Node> iter = roots.iterator();
+		while(iter.hasNext())
+		{
+			calculateNumOfDescendants(iter.next(), 0);
+		}
+	}
+	
+	private void calculateNumOfDescendants(Node root, int numOfDescendants)
+	{
+		int prevDescendants = root.getNumOfDescendants();
+		if(numOfDescendants > prevDescendants)
+		{
+			root.setNumOfDescendants(numOfDescendants);
+			numOfDescendants = root.getNumOfDescendants() + 1;
+			
+			Iterator<Node> iter2 = root.getPredecessors().iterator();
+			while(iter2.hasNext())
+			{
+				Node currentNode = iter2.next();
+				calculateNumOfDescendants(currentNode, numOfDescendants);
+			}
+		}
 	}
 
 	public void printButtomUp()
