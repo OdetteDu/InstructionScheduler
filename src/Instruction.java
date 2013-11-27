@@ -58,7 +58,7 @@ public class Instruction {
 	
 	public String toString()
 	{	
-		String s=opcode+" ";
+		String s=""+opcode;
 		
 		if(opcode==OPCODE.OUTPUT)
 		{
@@ -78,7 +78,7 @@ public class Instruction {
 		}
 		else if(opcode==OPCODE.NOP)
 		{
-			s=s.substring(0, s.length()-1);
+			//s=s.substring(0, s.length()-1);
 		}
 		else
 		{

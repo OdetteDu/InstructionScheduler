@@ -64,6 +64,7 @@ public class Main {
 	{
 		readFile();
 		instructions = new Renamer(instructions).renameInstructions();
+		Printer.print(instructions);
 		DependencyGraphCreater graphCreater = new DependencyGraphCreater(instructions);
 		graphCreater.run();
 		graphCreater.printTopDown();

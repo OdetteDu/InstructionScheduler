@@ -115,23 +115,19 @@ public class Machine {
 		}
 	}
 	
-	private void print(int cycle)
+	private String getCycle(int cycle)
 	{
-		//TODO after debug, change null to nop
-		System.out.println("["+unit1.get(cycle)+";"+unit2.get(cycle)+"]");
-	}
-	
-	public void print()
-	{
-		for(int i=1; i<unit1.size(); i++)
-		{
-			print(i);
-		}
+		return "["+unit1.get(cycle)+";"+unit2.get(cycle)+"]\n";
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Unit1: "+unit1+"\nUnit2: "+unit2;
+		String s="";
+		for(int i=1; i<unit1.size(); i++)
+		{
+			s+=getCycle(i);
+		}
+		return s;
 	}
 }

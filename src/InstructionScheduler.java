@@ -40,7 +40,7 @@ public class InstructionScheduler {
 	public void run()
 	{
 		schedule();
-		machine.print();
+		System.out.println(machine);
 	}
 
 	private void schedule()
@@ -110,15 +110,15 @@ public class InstructionScheduler {
 					System.out.println("Both unit can't schedule instruction "+ toBeSchedule.getInstruction());
 				}
 
-				makeActive(toBeSchedule, cycle);
-
-				Iterator<Node> iter = backToReady.iterator();
-				while(iter.hasNext())
-				{
-					ready.add(iter.next());
-				}
-				backToReady = new HashSet<Node>();
+				makeActive(toBeSchedule, cycle);	
 			}
+			
+			Iterator<Node> iter = backToReady.iterator();
+			while(iter.hasNext())
+			{
+				ready.add(iter.next());
+			}
+			backToReady = new HashSet<Node>();
 
 			scheduleInstruction(cycle);
 		}
@@ -135,14 +135,14 @@ public class InstructionScheduler {
 				Node toBeSchedule = breakTie(rest);
 				machine.scheduleUnit1(cycle, toBeSchedule.getInstruction());
 				makeActive(toBeSchedule, cycle);
-
-				Iterator<Node> iter = backToReady.iterator();
-				while(iter.hasNext())
-				{
-					ready.add(iter.next());
-				}
-				backToReady = new HashSet<Node>();
 			}
+			
+			Iterator<Node> iter = backToReady.iterator();
+			while(iter.hasNext())
+			{
+				ready.add(iter.next());
+			}
+			backToReady = new HashSet<Node>();
 		}
 		else if(machine.isUnit2Available(cycle))
 		{
@@ -157,14 +157,14 @@ public class InstructionScheduler {
 				Node toBeSchedule = breakTie(rest);
 				machine.scheduleUnit2(cycle, toBeSchedule.getInstruction());
 				makeActive(toBeSchedule, cycle);
-
-				Iterator<Node> iter = backToReady.iterator();
-				while(iter.hasNext())
-				{
-					ready.add(iter.next());
-				}
-				backToReady = new HashSet<Node>();
 			}
+			
+			Iterator<Node> iter = backToReady.iterator();
+			while(iter.hasNext())
+			{
+				ready.add(iter.next());
+			}
+			backToReady = new HashSet<Node>();
 		}
 	}
 
