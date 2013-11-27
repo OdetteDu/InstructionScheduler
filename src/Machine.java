@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Machine {
 	
-	public static Instruction NOP = new Instruction(Instruction.OPCODE.NOP);
+	public static Instruction NOP = new Instruction(Instruction.OPCODE.nop);
 	
 	ArrayList<Instruction> unit1;
 	ArrayList<Instruction> unit2;
@@ -41,17 +41,17 @@ public class Machine {
 	public boolean canScheduleUnit1(int cycle, Instruction instruction)
 	{
 		Instruction.OPCODE opcode = instruction.getOpcode();
-		if(opcode == Instruction.OPCODE.MULT)
+		if(opcode == Instruction.OPCODE.mult)
 		{
 			//unable to perform mult
 			return false;
 		}
 		
-		if(opcode == Instruction.OPCODE.OUTPUT)
+		if(opcode == Instruction.OPCODE.output)
 		{
 			if(!isUnit2Available(cycle))
 			{
-				if(unit2.get(cycle).getOpcode() == Instruction.OPCODE.OUTPUT)
+				if(unit2.get(cycle).getOpcode() == Instruction.OPCODE.output)
 				{
 					//unable to perform output
 					return false;
@@ -65,17 +65,17 @@ public class Machine {
 	public boolean canScheduleUnit2(int cycle, Instruction instruction)
 	{
 		Instruction.OPCODE opcode = instruction.getOpcode();
-		if(opcode == Instruction.OPCODE.LOAD || opcode == Instruction.OPCODE.STORE)
+		if(opcode == Instruction.OPCODE.load || opcode == Instruction.OPCODE.store)
 		{
 			//unable to perform load or store
 			return false;
 		}
 		
-		if(opcode == Instruction.OPCODE.OUTPUT)
+		if(opcode == Instruction.OPCODE.output)
 		{
 			if(!isUnit1Available(cycle))
 			{
-				if(unit1.get(cycle).getOpcode() == Instruction.OPCODE.OUTPUT)
+				if(unit1.get(cycle).getOpcode() == Instruction.OPCODE.output)
 				{
 					//unable to perform output
 					return false;
@@ -117,7 +117,7 @@ public class Machine {
 	
 	private String getCycle(int cycle)
 	{
-		return "["+unit1.get(cycle)+";"+unit2.get(cycle)+"]\n";
+		return "[ "+unit1.get(cycle)+" ; "+unit2.get(cycle)+" ]\n";
 	}
 	
 	@Override

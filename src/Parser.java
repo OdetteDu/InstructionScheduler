@@ -25,23 +25,23 @@ public class Parser {
 			Instruction.OPCODE o;
 			if(opcode.equals("add"))
 			{
-				o = Instruction.OPCODE.ADD;
+				o = Instruction.OPCODE.add;
 			}
 			else if(opcode.equals("sub"))
 			{
-				o = Instruction.OPCODE.SUB;
+				o = Instruction.OPCODE.sub;
 			}
 			else if(opcode.equals("mult"))
 			{
-				o = Instruction.OPCODE.MULT;
+				o = Instruction.OPCODE.mult;
 			}
 			else if(opcode.equals("lshift"))
 			{
-				o = Instruction.OPCODE.LSHIFT;
+				o = Instruction.OPCODE.lshift;
 			}
 			else if(opcode.equals("rshift"))
 			{
-				o = Instruction.OPCODE.RSHIFT;
+				o = Instruction.OPCODE.rshift;
 			}
 			else
 			{
@@ -65,7 +65,7 @@ public class Parser {
 			{
 				throw new ExtraTokenException();
 			}
-			instruction=new Instruction(Instruction.OPCODE.OUTPUT);
+			instruction=new Instruction(Instruction.OPCODE.output);
 			
 			try
 			{
@@ -88,7 +88,7 @@ public class Parser {
 			}
 			Register target=getRegister(line.get(3));
 			checkArrow(line.get(2));
-			instruction=new Instruction(Instruction.OPCODE.LOADI);
+			instruction=new Instruction(Instruction.OPCODE.loadI);
 			instruction.setTarget(target);
 	
 			try
@@ -111,7 +111,7 @@ public class Parser {
 			Register source1=getRegister(line.get(1));
 			Register source2=getRegister(line.get(3));
 			checkArrow(line.get(2));
-			instruction=new Instruction(Instruction.OPCODE.STORE);
+			instruction=new Instruction(Instruction.OPCODE.store);
 			instruction.setSource1(source1);
 			instruction.setSource2(source2);
 		}
@@ -125,7 +125,7 @@ public class Parser {
 			Register source1=getRegister(line.get(1));
 			checkArrow(line.get(2));
 			Register target=getRegister(line.get(3));
-			instruction=new Instruction(Instruction.OPCODE.LOAD);
+			instruction=new Instruction(Instruction.OPCODE.load);
 			instruction.setSource1(source1);
 			instruction.setTarget(target);
 		}

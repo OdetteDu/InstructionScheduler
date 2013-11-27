@@ -56,13 +56,13 @@ public class DependencyGraphCreater {
 
 			Instruction.OPCODE opcode = instruction.getOpcode();
 
-			if(opcode==Instruction.OPCODE.OUTPUT)
+			if(opcode==Instruction.OPCODE.output)
 			{
 				//s+=" "+immediateValue;	
 				waitForStore.add(currentNode);
 				roots.add(currentNode);
 			}
-			else if(opcode==Instruction.OPCODE.LOADI)
+			else if(opcode==Instruction.OPCODE.loadI)
 			{
 				//s+=" "+immediateValue+" => "+target;	
 				Register target=instruction.getTarget();
@@ -87,7 +87,7 @@ public class DependencyGraphCreater {
 
 				waitForStore.add(currentNode);
 			}
-			else if(opcode==Instruction.OPCODE.STORE)
+			else if(opcode==Instruction.OPCODE.store)
 			{
 				//s+=" "+source1+" => "+source2;
 				Register source1=instruction.getSource1();
@@ -166,7 +166,7 @@ public class DependencyGraphCreater {
 				}
 				prevStore = currentNode;
 			}
-			else if(opcode==Instruction.OPCODE.LOAD)
+			else if(opcode==Instruction.OPCODE.load)
 			{
 				//s+=" "+source1+" => "+target;	
 				Register target=instruction.getTarget();

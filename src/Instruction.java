@@ -12,20 +12,20 @@ public class Instruction {
 	public static String LOADI="loadI";
 	public static String OUTPUT="output";
 	
-	public static enum OPCODE {ADD, SUB, MULT, LSHIFT, RSHIFT, LOAD, LOADI, STORE, OUTPUT, NOP};
+	public static enum OPCODE {add, sub, mult, lshift, rshift, load, loadI, store, output, nop};
 	public static Map<OPCODE, Integer> DELAYMAP = new EnumMap<OPCODE, Integer>(OPCODE.class);
 	static
 	{
-		DELAYMAP.put(OPCODE.ADD, 1);
-		DELAYMAP.put(OPCODE.SUB, 1);
-		DELAYMAP.put(OPCODE.MULT, 3);
-		DELAYMAP.put(OPCODE.LSHIFT, 1);
-		DELAYMAP.put(OPCODE.RSHIFT, 1);
-		DELAYMAP.put(OPCODE.LOAD, 5);
-		DELAYMAP.put(OPCODE.LOADI, 1);
-		DELAYMAP.put(OPCODE.STORE, 5);
-		DELAYMAP.put(OPCODE.OUTPUT, 1);
-		DELAYMAP.put(OPCODE.NOP, 1);
+		DELAYMAP.put(OPCODE.add, 1);
+		DELAYMAP.put(OPCODE.sub, 1);
+		DELAYMAP.put(OPCODE.mult, 3);
+		DELAYMAP.put(OPCODE.lshift, 1);
+		DELAYMAP.put(OPCODE.rshift, 1);
+		DELAYMAP.put(OPCODE.load, 5);
+		DELAYMAP.put(OPCODE.loadI, 1);
+		DELAYMAP.put(OPCODE.store, 5);
+		DELAYMAP.put(OPCODE.output, 1);
+		DELAYMAP.put(OPCODE.nop, 1);
 	}
 
 	private int index;
@@ -60,29 +60,29 @@ public class Instruction {
 	{	
 		String s=""+opcode;
 		
-		if(opcode==OPCODE.OUTPUT)
+		if(opcode==OPCODE.output)
 		{
 			s+=" "+immediateValue;	
 		}
-		else if(opcode==OPCODE.LOADI)
+		else if(opcode==OPCODE.loadI)
 		{
 			s+=" "+immediateValue+" => "+target;	
 		}
-		else if(opcode==OPCODE.STORE)
+		else if(opcode==OPCODE.store)
 		{
 			s+=" "+source1+" => "+source2;
 		}
-		else if(opcode==OPCODE.LOAD)
+		else if(opcode==OPCODE.load)
 		{
 			s+=" "+source1+" => "+target;	
 		}
-		else if(opcode==OPCODE.NOP)
+		else if(opcode==OPCODE.nop)
 		{
 			//s=s.substring(0, s.length()-1);
 		}
 		else
 		{
-			s+=" "+source1+" "+source2+" => "+target;
+			s+=" "+source1+", "+source2+" => "+target;
 		}	
 		
 		return s;
